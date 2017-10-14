@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/krishnr/ETHWaterloo/issues"
   },
-  "homepage": "https://github.com/krishnr/ETHWaterloo#readme"
+  "homepage": "https://github.com/krishnr/ETHWaterloo#readme",
+  "dependencies": {
+    "solc": "^0.4.17",
+    "web3": "^0.20.1"
+  }
 }
