@@ -35,7 +35,7 @@ contract SnowAngel {
 
     // Each household in the community should have a struct associated
     // with it. 
-    struct HouseHold { 
+    struct Household { 
         uint score; // running score/points collected by household
         bytes32 name;
         bool isCleaned;
@@ -50,14 +50,13 @@ contract SnowAngel {
         government = msg.sender; 
     }  
     
-    function registerHousehold(address owner, byte32 name) {
+    function registerHousehold(address owner, bytes32 name) {
         require(msg.sender == government);
-        household = Household({
+        households[owner] = Household({
                         score:0,
                         name:name,
                         isCleaned:false
                         });
-        households[owner] = household;
     }
 
     function getHousehold(address owner) 
