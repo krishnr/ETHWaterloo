@@ -38,7 +38,8 @@ contract SnowAngel {
     struct Household { 
         uint score; // running score/points collected by household
         bytes32 name;
-        bool isCleaned;
+        address[] hasCleaned;
+        address[] cleanedBy;
     }
     
     uint public expiryTime;
@@ -55,7 +56,8 @@ contract SnowAngel {
         households[owner] = Household({
                         score:0,
                         name:name,
-                        isCleaned:false
+                        hasCleaned: new address[](0),
+                        cleanedBy: new address[](0)
                         });
     }
 
@@ -73,5 +75,9 @@ contract SnowAngel {
         returns (uint time)
     {
         time = expiryTime;
+    }
+
+    function registerRemoval(address cleaner, address[] hasCleaned) {
+        
     }
  }
