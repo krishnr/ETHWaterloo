@@ -1,0 +1,16 @@
+body {
+    font-family: 'Open Sans';
+    color: #EFEFEF;
+}
+
+.container {
+    background-color: #1F1F1F;
+}
+
+.content {
+    align-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 50px;
+}
+
