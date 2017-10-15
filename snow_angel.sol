@@ -56,10 +56,16 @@ contract SnowAngel {
         ownersList.push(owner);
     }
 
-    function getHousehold(address owner) 
+    function getHouseholdName(address owner) 
         returns (string name)
     {
         name = households[owner].name;
+    }
+
+    function getHouseholdScore(address owner) 
+        returns (uint score)
+    {
+        score = households[owner].score;
     }
 
     function registerSnowfall() {
