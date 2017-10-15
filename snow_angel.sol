@@ -17,6 +17,12 @@ library Set {
         self.list.push(value);
         return true;
     }
+    
+    function contains(Data storage self, address value)
+        returns (bool)
+    {
+        return self.flags[value];
+    }
 }
 
 contract SnowAngel {
@@ -98,9 +104,9 @@ contract SnowAngel {
             owner = ownersList[i];
             h = households[owner];
             if (h.cleanedBy.length > 1) {
-                liars.insert(owner);
-            } else {
-                truthers.insert(owner);
+                for (uint j = 0; j < h.cleanedBy.length; j++) {
+                    liars.insert(h.cleanedBy[j]);
+                }
             }
         }
 
@@ -109,25 +115,26 @@ contract SnowAngel {
 
         address[] liarsList; 
         liarsList = liars.list;
-        address[] truthersList; 
-        truthersList = truthers.list;
 
         for (i = 0; i < liarsList.length; i++) {
             owner = ownersList[i];
             h = households[owner];
             h.score += liarsScore;
-            h.cleanedBy = new address[](0);
-            h.hasCleaned = new address[](0);
+            delete h.cleanedBy;
+            delete h.hasCleaned;
         }
-
+        
         uint trutherScore;
-        for (i = 0; i < truthersList.length; i++) {
+        for (i = 0; i < ownersList.length; i++) {
             owner = ownersList[i];
-            h = households[owner];
-            trutherScore = 100*h.hasCleaned.length + 10;
-            h.score += trutherScore;
-            h.cleanedBy = new address[](0);
-            h.hasCleaned = new address[](0);
+            if (!liars.contains(owner)) {
+                h = households[owner];
+                trutherScore = 100*h.hasCleaned.length + 10;
+                h.score += trutherScore;
+                delete h.cleanedBy;
+                delete h.hasCleaned;
+                
+            }
         }
     }
 
