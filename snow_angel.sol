@@ -1,35 +1,6 @@
 pragma solidity ^0.4.11;
 
-library Set {
-    struct Data { 
-        mapping(address => bool) flags;
-        uint length;
-        address[] list;
-    }
-
-    function insert(Data storage self, address value)
-        returns (bool)
-    {
-        if (self.flags[value])
-            return false; // already there
-        self.flags[value] = true;
-        self.length++;
-        self.list.push(value);
-        return true;
-    }
-    
-    function contains(Data storage self, address value)
-        returns (bool)
-    {
-        return self.flags[value];
-    }
-}
-
 contract SnowAngel {
-
-    using Set for Set.Data;
-    Set.Data liars;
-    Set.Data truthers;
 
     // Each household in the community should have a struct associated
     // with it. 
@@ -38,6 +9,7 @@ contract SnowAngel {
         string name;
         address[] hasCleaned;
         address[] cleanedBy;
+        bool hasLied;
     }
     
     uint public expiryTime;
@@ -56,7 +28,8 @@ contract SnowAngel {
                         score:0,
                         name:name,
                         hasCleaned: new address[](0),
-                        cleanedBy: new address[](0)
+                        cleanedBy: new address[](0),
+                        hasLied: false
                         });
         
         ownersList.push(owner);
@@ -100,41 +73,36 @@ contract SnowAngel {
     function resolveScore() {
         Household h;
         address owner;
+        uint numLiars = 0;
+
         for (uint i = 0; i < ownersList.length; i++) {
             owner = ownersList[i];
             h = households[owner];
             if (h.cleanedBy.length > 1) {
                 for (uint j = 0; j < h.cleanedBy.length; j++) {
-                    liars.insert(h.cleanedBy[j]);
+                    if (!households[h.cleanedBy[j]].hasLied) {
+                        households[h.cleanedBy[j]].hasLied = true;
+                        numLiars++;
+                    }
                 }
             }
         }
 
-        uint numLiars = liars.length;
-        uint liarsScore = 100-10*numLiars;
-
-        address[] liarsList; 
-        liarsList = liars.list;
-
-        for (i = 0; i < liarsList.length; i++) {
-            owner = ownersList[i];
-            h = households[owner];
-            h.score += liarsScore;
-            delete h.cleanedBy;
-            delete h.hasCleaned;
-        }
-        
+        uint liarsScore = 100-(10*numLiars);
         uint trutherScore;
+
         for (i = 0; i < ownersList.length; i++) {
             owner = ownersList[i];
-            if (!liars.contains(owner)) {
-                h = households[owner];
+            h = households[owner];
+            if (households[owner].hasLied) {
+                h.score += liarsScore;
+            } else {
                 trutherScore = 100*h.hasCleaned.length + 10;
                 h.score += trutherScore;
-                delete h.cleanedBy;
-                delete h.hasCleaned;
-                
             }
+            delete h.cleanedBy;
+            delete h.hasCleaned;
+            households[owner].hasLied = false;
         }
     }
 
