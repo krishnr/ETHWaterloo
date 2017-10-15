@@ -14,7 +14,9 @@ contract SnowAngel {
     
     uint public expiryTime;
     address public government; 
-  
+    
+    uint public householdsReported; 
+
     mapping(address => Household) public households;
     address[] public ownersList;
     
@@ -68,9 +70,12 @@ contract SnowAngel {
             h = households[hasCleaned[i]];
             h.cleanedBy.push(cleaner);
         }
+        householdsReported++;
     }
 
     function resolveScore() {
+        require(householdsReported == ownersList.length);
+
         Household h;
         address owner;
         uint numLiars = 0;
@@ -105,5 +110,5 @@ contract SnowAngel {
             households[owner].hasLied = false;
         }
     }
-
+    
  }
