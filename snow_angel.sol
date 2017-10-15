@@ -16,7 +16,8 @@ contract SnowAngel {
     address public government; 
     
     uint public householdsReported; 
-
+    bool public isResolved;
+    
     mapping(address => Household) public households;
     address[] public ownersList;
     
@@ -52,6 +53,7 @@ contract SnowAngel {
     function registerSnowfall() {
         require(msg.sender == government);
         expiryTime = now + 72*60*60;
+        isResolved = false;
     }
     
     function getExpiryTime() 
@@ -59,6 +61,13 @@ contract SnowAngel {
     {
         time = expiryTime;
     }
+
+    function getisResolved() 
+        returns (bool isresolve)
+    {
+        isresolve = isResolved;
+    }
+
 
     function registerRemoval(address cleaner, address[] hasCleaned) {
         Household cleanerHousehold;
@@ -72,7 +81,7 @@ contract SnowAngel {
         }
         householdsReported++;
     }
-
+    
     function resolveScore() {
         require(householdsReported == ownersList.length);
 
@@ -109,6 +118,7 @@ contract SnowAngel {
             delete h.hasCleaned;
             households[owner].hasLied = false;
         }
+        isResolved = true;
     }
     
  }
