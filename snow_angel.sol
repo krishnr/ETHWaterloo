@@ -37,7 +37,7 @@ contract SnowAngel {
     // with it. 
     struct Household { 
         uint score; // running score/points collected by household
-        bytes32 name;
+        string name;
         address[] hasCleaned;
         address[] cleanedBy;
     }
@@ -51,7 +51,7 @@ contract SnowAngel {
         government = msg.sender; 
     }  
     
-    function registerHousehold(address owner, bytes32 name) {
+    function registerHousehold(address owner, string name) {
         require(msg.sender == government);
         households[owner] = Household({
                         score:0,
@@ -62,7 +62,7 @@ contract SnowAngel {
     }
 
     function getHousehold(address owner) 
-        returns (bytes32 name)
+        returns (string name)
     {
         name = households[owner].name;
     }
@@ -78,6 +78,15 @@ contract SnowAngel {
     }
 
     function registerRemoval(address cleaner, address[] hasCleaned) {
-        
+        Household cleanerHousehold;
+        cleanerHousehold = households[cleaner];
+        cleanerHousehold.hasCleaned = hasCleaned;
+
+        Household h;
+        for (uint i = 0; i < hasCleaned.length; i++) {  
+            h = households[hasCleaned[i]];
+            h.cleanedBy.push(cleaner);
+        }
     }
+
  }
