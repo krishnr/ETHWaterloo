@@ -60,7 +60,7 @@ contract SnowAngel {
         households[owner] = household;
     }
 
-    function getHoushold(address owner) 
+    function getHousehold(address owner) 
         returns (bytes32 name)
     {
         name = households[owner].name;
