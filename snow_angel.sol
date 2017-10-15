@@ -62,8 +62,9 @@ contract SnowAngel {
         name = households[owner].name;
     }
 
-    function setExpiryTime(uint time) {
-        expiryTime = time + 72*60*60;
+    function registerSnowfall() {
+        require(msg.sender == government);
+        expiryTime = now + 72*60*60;
     }
     
     function getExpiryTime() 
